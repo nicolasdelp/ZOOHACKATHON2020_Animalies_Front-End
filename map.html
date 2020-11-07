@@ -90,13 +90,13 @@
         <div class="uk-grid-medium uk-grid-match uk-child-width-expand@s uk-text-center uk-margin-medium-top" uk-grid>
             <div class="uk-width-3-5@m uk-grid-margin">
                 <div class="uk-panel">
-                    <div id="mapid" style="height: 500px;"></div>
+                    <div id="mapid" style="height: 800px;"></div>
                 </div>
                 <script>
                     window.addEventListener("load", function setup_map(){
                         const userAction = async () => {
-                            const response = await fetch('http://localhost:5000/elephants/LA1');
-                            const elephants = await response.json(); //extract JSON from the http response
+                            // const response = await fetch('http://localhost:5000/elephants/LA1');
+                            // const elephants = await response.json(); //extract JSON from the http response
                             var mymap = L.map('mapid').setView([-19.06372477, 16.20208842], 8);
 
                             L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
@@ -108,23 +108,23 @@
                                 tileSize: 512,
                                 zoomOffset: -1
                             }).addTo(mymap);
-                            line = []
-                            for (i = 0; i < elephants.length; i++) {
-                                var e = elephants[i];
-                                line.push([e.latitude, e.longitude])
-                                // var marker = L.marker([e.latitude, e.longitude]).addTo(mymap);
-                                // var circle = L.circle([e.latitude, e.longitude], {
-                                //     color: 'red',
-                                //     fillColor: '#f03',
-                                //     fillOpacity: 0.5,
-                                //     radius: 500
-                                // }).addTo(mymap);
-                            }
-                            var startMarker = L.marker([elephants[0].latitude, elephants[0].longitude]).addTo(mymap);
-                            startMarker.bindPopup("<b>Start</b>").openPopup();
-                            var endMarker = L.marker([elephants[elephants.length-1].latitude, elephants[elephants.length-1].longitude]).addTo(mymap);
-                            endMarker.bindPopup("<b>End</b>").openPopup();
-                            var polyline = L.polyline(line, {color: 'red'}).addTo(mymap);
+                            // line = []
+                            // for (i = 0; i < elephants.length; i++) {
+                            //     var e = elephants[i];
+                            //     line.push([e.latitude, e.longitude])
+                            //     // var marker = L.marker([e.latitude, e.longitude]).addTo(mymap);
+                            //     // var circle = L.circle([e.latitude, e.longitude], {
+                            //     //     color: 'red',
+                            //     //     fillColor: '#f03',
+                            //     //     fillOpacity: 0.5,
+                            //     //     radius: 500
+                            //     // }).addTo(mymap);
+                            // }
+                            // var startMarker = L.marker([elephants[0].latitude, elephants[0].longitude]).addTo(mymap);
+                            // startMarker.bindPopup("<b>Start</b>").openPopup();
+                            // var endMarker = L.marker([elephants[elephants.length-1].latitude, elephants[elephants.length-1].longitude]).addTo(mymap);
+                            // endMarker.bindPopup("<b>End</b>").openPopup();
+                            // var polyline = L.polyline(line, {color: 'red'}).addTo(mymap);
                         }
                         userAction();
                     })
