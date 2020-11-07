@@ -15,9 +15,11 @@
     <link rel="stylesheet" href="PERSO/css/style.css" />
     <script src="PERSO/js/script.js"></script>
 
+    <!-- Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
-    
+
 </head>
 <body>
 
@@ -68,7 +70,7 @@
                 
                 <li class="uk-nav-header uk-margin-small-top"><span class="uk-margin-small-right" uk-icon="icon: location"></span> Visualization on map</li>
                 <li class="uk-nav-divider"></li>
-                <li class="uk-margin-medium-left"><a href="map.html">In the time</a></li>
+                <li class="uk-margin-medium-left"><a href="#">In the time</a></li>
                 <li class="uk-margin-medium-left"><a href="#">By zone</a></li>
                 <li class="uk-margin-medium-left"><a href="#">Anomalies</a></li>
 
@@ -85,41 +87,45 @@
         <div class="uk-grid-medium uk-child-width-expand@s uk-text-center uk-margin-medium-top" uk-grid>
             <div class="uk-first-column">
                 <div class="uk-panel">
-                    <h2 class="uk-margin-medium-bottom uk-text-uppercase">Alerts</h2>
-                    <div class="uk-alert-danger" uk-alert>
-                        <a class="uk-alert-close" uk-close></a>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
-                    </div>
-                    <div class="uk-alert-danger" uk-alert>
-                        <a class="uk-alert-close" uk-close></a>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
-                    </div>
-                    <div class="uk-alert-danger" uk-alert>
-                        <a class="uk-alert-close" uk-close></a>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
-                    </div>
-                    <div class="uk-alert-danger" uk-alert>
-                        <a class="uk-alert-close" uk-close></a>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
-                    </div>
-                    <div class="uk-alert-danger" uk-alert>
-                        <a class="uk-alert-close" uk-close></a>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
-                    </div>
-                    <div class="uk-alert-danger" uk-alert>
-                        <a class="uk-alert-close" uk-close></a>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
-                    </div>
-                    <div class="uk-alert-danger" uk-alert>
-                        <a class="uk-alert-close" uk-close></a>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
-                    </div>
+                    <div id="mapid" style="height: 500px;"></div>
                 </div>
-            </div>
-            <div>
-                <div class="uk-panel">
-                    <div id="mapid"></div>
-                </div>
+                <script>
+                    window.addEventListener("load", function setup_map(){
+                        const userAction = async () => {
+                            const response = await fetch('http://localhost:5000/elephants/LA1');
+                            const elephants = await response.json(); //extract JSON from the http response
+                            var mymap = L.map('mapid').setView([-19.06372477, 16.20208842], 8);
+
+                            L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+                                maxZoom: 18,
+                                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+                                    '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+                                    'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                                id: 'mapbox/streets-v11',
+                                tileSize: 512,
+                                zoomOffset: -1
+                            }).addTo(mymap);
+                            line = []
+                            for (i = 0; i < elephants.length; i++) {
+                                var e = elephants[i];
+                                line.push([e.latitude, e.longitude])
+                                // var marker = L.marker([e.latitude, e.longitude]).addTo(mymap);
+                                // var circle = L.circle([e.latitude, e.longitude], {
+                                //     color: 'red',
+                                //     fillColor: '#f03',
+                                //     fillOpacity: 0.5,
+                                //     radius: 500
+                                // }).addTo(mymap);
+                            }
+                            var startMarker = L.marker([elephants[0].latitude, elephants[0].longitude]).addTo(mymap);
+                            startMarker.bindPopup("<b>Start</b>").openPopup();
+                            var endMarker = L.marker([elephants[elephants.length-1].latitude, elephants[elephants.length-1].longitude]).addTo(mymap);
+                            endMarker.bindPopup("<b>End</b>").openPopup();
+                            var polyline = L.polyline(line, {color: 'red'}).addTo(mymap);
+                        }
+                        userAction();
+                    })
+                </script>
             </div>
         </div>
     </div>
