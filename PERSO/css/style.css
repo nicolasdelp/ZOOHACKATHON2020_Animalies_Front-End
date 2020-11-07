@@ -34,3 +34,12 @@
 .text-black{
     color: black !important;
 }
+
+.green-bg{
+    background-color: #5B9279 !important;
+}
+
+.green-bg:hover{
+    background-color: #FFEE93 !important;
+    color: black !important;
+}
